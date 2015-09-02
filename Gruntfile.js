@@ -61,8 +61,6 @@ module.exports = function(grunt) {
     }
   });
 
-  var async = require('async');
-
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-clean');

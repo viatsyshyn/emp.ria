@@ -30,9 +30,6 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "async": "^1.4.2",
-    "chook": "0.0.3",
-    "chook-jstestdriver": "0.0.3",
     "grunt": "^0.4.5",
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-jshint": "~0.6.0",
