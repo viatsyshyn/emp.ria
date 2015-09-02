@@ -21,18 +21,33 @@ REQUIRE('ria.async.Timer');
 NAMESPACE('ria.ajax', function () {
     "use strict";
 
+    function first1024(x) {
+        return x && x.length > 1024 ? x.substr(0, 1024) : (x || '');
+    }
+
     /** @class ria.ajax.AjaxException */
     EXCEPTION(
         'AjaxException', [
+            READONLY, String, 'url',
             READONLY, Number, 'status',
             READONLY, String, 'statusText',
             READONLY, String, 'response',
 
-            function $(status, statusText, response) {
+            function $(status, statusText, response, url_) {
                 BASE('Ajax error: ' + status + ' ' + statusText);
                 this.status = status;
                 this.statusText = statusText;
                 this.response = response;
+                this.url = url_ || null;
+            },
+
+            OVERRIDE, String, function toString() {
+                var lines = BASE().split('\n');
+                lines.splice(1, 0, [
+                    '  URL: ' + this.url,
+                    '  Response: ' + first1024(this.response)
+                ]);
+                return lines.join('\n');
             }
         ]);
 
@@ -152,7 +167,7 @@ NAMESPACE('ria.ajax', function () {
                 } else {
                     this._completer.completeError(this._xhr.status == 0
                         ? ria.ajax.ConnectionException()
-                        : ria.ajax.AjaxException(this._xhr.status, this._xhr.statusText, this._xhr.response));
+                        : ria.ajax.AjaxException(this._xhr.status, this._xhr.statusText, this._xhr.response, this._url));
                 }
             },
 
