@@ -19,4 +19,4 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    repo: viatsyshyn/emp.ria2
+    repo: viatsyshyn/emp.ria
