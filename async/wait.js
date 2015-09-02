@@ -42,7 +42,7 @@ NAMESPACE('ria.async', function () {
                 completer.cancel();
             })
             .catchError(function (e) {
-                if (complete) throw e;
+                if (complete) return ;
 
                 complete = true;
                 completer.completeError(e);

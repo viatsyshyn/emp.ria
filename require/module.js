@@ -152,7 +152,7 @@
                     s = stack.pop();
 
                 var matches = s.match(HTTP_PATH_REGEX) || [];
-                return matches.pop().split(/\?/).shift().replace(/^https?:/, '');
+                return matches.pop().split(/\?/).shift().replace(ria.__CFG['#require'].siteRoot, '');
             }
         };
 

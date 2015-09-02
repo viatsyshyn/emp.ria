@@ -100,10 +100,6 @@ NAMESPACE('ria.dom', function () {
                 return !!this._dom.valueOf()[0];
             },
 
-            String, function getSelector() {
-                return this._dom.selector;
-            },
-
             /* DatePicker */
             [[Object, Date]],
             ria.dom.Dom, function datepicker(options, value_){
@@ -119,11 +115,6 @@ NAMESPACE('ria.dom', function () {
                 return new ria.dom.Dom(jQuery(selector, this._dom));
             },
 
-            [[String]],
-            ria.dom.Dom, function siblings(selector_) {
-                return new ria.dom.Dom(this._dom.siblings(selector_));
-            },
-
             /* Events */
 
             // TODO: need a good way of implementing off()
@@ -136,15 +127,15 @@ NAMESPACE('ria.dom', function () {
                 return this;
             }, */
 
-            [[Number, Function]],
-            ria.dom.Dom, function slideDown(time_, complete_){
-                time_ ? this._dom.slideDown(time_, complete_) : this._dom.slideDown();
+            [[Number]],
+            ria.dom.Dom, function slideDown(time_){
+                time_ ? this._dom.slideDown(time_) : this.slideDown.show();
                 return this;
             },
 
-            [[Number, Function]],
-            ria.dom.Dom, function slideUp(time_, complete_){
-                time_ ? this._dom.slideUp(time_, complete_) : this._dom.slideUp();
+            [[Number]],
+            ria.dom.Dom, function slideUp(time_){
+                time_ ? this._dom.slideUp(time_) : this._dom.slideUp();
                 return this;
             },
 
@@ -252,21 +243,6 @@ NAMESPACE('ria.dom', function () {
                 return this;
             },
 
-            OVERRIDE, ria.dom.Dom, function insertBefore(dom) {
-                VALIDATE_ARG('dom', [ria.dom.Dom, String, Node], dom);
-
-                if(typeof dom == "string")
-                    dom = new ria.dom.Dom(dom);
-
-                var dest = dom instanceof Node ? dom : dom.valueOf().shift();
-                if(dest){
-                    VALIDATE_ARG('dom', [Node], dest);
-
-                    this._dom.insertBefore(dest);
-                }
-                return this;
-            },
-
             ria.dom.Dom, function appendChild(dom) {
                 VALIDATE_ARG('dom', [ria.dom.Dom, String, Node], dom);
 
@@ -328,18 +304,10 @@ NAMESPACE('ria.dom', function () {
                 return this;
             },
 
-            [[SELF]],
-            OVERRIDE, SELF, function removeSelf() {
-                this._dom.each(function(){ this.parentNode && this.parentNode.removeChild(this); });
-                return this;
-            },
-
             // reference https://github.com/julienw/dollardom
 
             [[String]],
-            OVERRIDE, ria.dom.Dom, function descendants(selector__) {
-
-            },
+            OVERRIDE, ria.dom.Dom, function descendants(selector__) {},
             [[String]],
             OVERRIDE, ria.dom.Dom, function parent(selector_) {
                 return selector_ ? new ria.dom.Dom(this._dom.parents(selector_)) : new ria.dom.Dom(this._dom.parent());
@@ -353,9 +321,7 @@ NAMESPACE('ria.dom', function () {
                 return new ria.dom.Dom(this._dom.prev(selector_));
             },
             [[String]],
-            OVERRIDE, ria.dom.Dom, function first(selector_) {
-                return new ria.dom.Dom(this._dom.first(selector_));
-            },
+            OVERRIDE, ria.dom.Dom, function first(selector_) {},
             [[String]],
             OVERRIDE, ria.dom.Dom, function last(selector_) {},
             [[String]],
@@ -385,15 +351,10 @@ NAMESPACE('ria.dom', function () {
 
             /* attributes */
 
-            [[String]],
-            OVERRIDE, Boolean, function hasAttr(name) {
-                return this._dom[0] && this._dom[0].hasAttribute ? this._dom[0].hasAttribute(name) || null : null;
-            },
-
             OVERRIDE, Object, function getAllAttrs() {},
             [[String]],
             OVERRIDE, Object, function getAttr(name) {
-                return this._dom[0] && this._dom[0].getAttribute ? this._dom[0].getAttribute(name) || null : null;
+                return this._dom.attr(name) || null;
             },
             OVERRIDE, Object, function getValue() {
                 return this._dom.val() || null;
@@ -402,17 +363,7 @@ NAMESPACE('ria.dom', function () {
             OVERRIDE, ria.dom.Dom, function setAllAttrs(obj) {},
             [[String, Object]],
             OVERRIDE, ria.dom.Dom, function setAttr(name, value) {
-                this._dom[0] && this._dom.each(function(){
-                    if(this.setAttribute ){
-                        value ? this.setAttribute(name, value) : this.removeAttribute(name);
-                    }
-                });
-                return this;
-            },
-
-            [[String, Object]],
-            OVERRIDE, ria.dom.Dom, function setProp(name, value) {
-                this._dom.prop(name, value);
+                this._dom.attr(name, value);
                 return this;
             },
 
@@ -427,14 +378,6 @@ NAMESPACE('ria.dom', function () {
             [[Object]],
             OVERRIDE, ria.dom.Dom, function setValue(value) {
                 this._dom.val(value);
-                if(this.getAttr('type') == 'checkbox'){
-                    var node = this.parent().find('.hidden-checkbox');
-                    node.setValue(value);
-                    node.setData('value', value);
-                }
-                if(this._dom.is('select')){
-                    this._dom.trigger('change');
-                }
                 return this;
             },
 
@@ -460,17 +403,6 @@ NAMESPACE('ria.dom', function () {
             OVERRIDE, ria.dom.Dom, function setData(name, value) {
                 this.setAttr('data-' + name, value);
                 this._dom.data(name, value);
-                return this;
-            },
-
-            /* text */
-            OVERRIDE, String, function getText() {
-                return this._dom.text();
-            },
-
-            [[String]],
-            OVERRIDE, SELF, function setText(value) {
-                this._dom.text(value);
                 return this;
             },
 
@@ -556,75 +488,25 @@ NAMESPACE('ria.dom', function () {
 
             [[Number]],
             OVERRIDE, function scrollTop(top_) {
-                return top_ || top_ == 0 ? this._dom.scrollTop(top_) : this._dom.scrollTop();
+                return top_ ? this._dom.scrollTop(top_) : this._dom.scrollTop();
             },
 
             /* Form */
 
-            Object, function serialize(noArray_){
+            Object, function serialize(){
                 var o = {};
-                var array = this._dom.serializeArray();
-                array.forEach(function(item) {
-                    if (o[item.name] !== undefined && !noArray_) {
-                        if (!o[item.name].push) {
-                            o[item.name] = [o[item.name]];
+                var array = this.dom.serializeArray();
+                array.forEach(function() {
+                    if (o[this.name] !== undefined) {
+                        if (!o[this.name].push) {
+                            o[this.name] = [o[this.name]];
                         }
-                        o[item.name].push(item.value || '');
+                        o[this.name].push(this.value || '');
                     } else {
-                        o[item.name] = item.value || '';
+                        o[this.name] = this.value || '';
                     }
                 });
                 return o;
-            },
-
-            /* Text selection*/
-
-            OVERRIDE, ria.dom.Dom, function select() {
-                this._dom.select();
-                return this;
-            },
-
-            [[Number]],
-            VOID, function setCursorPosition(pos) {
-                var el = this._dom.valueOf()[0];
-                if (pos > el.value.length)
-                    pos = el.value.length;
-                if (el.setSelectionRange) {
-                    el.setSelectionRange(pos, pos);
-                } else if (el.createTextRange) {
-                    // IE
-                    var range = el.createTextRange();
-                    range.collapse(true);
-                    range.moveStart('character', pos);
-                    range.moveEnd('character', pos);
-                    range.select();
-                }
-            },
-
-            Number, function getCursorPosition() {
-                var el = this._dom.valueOf()[0];
-                var pos = 0;
-                if('selectionStart' in el) {
-                    pos = el.selectionStart;
-                } else if('selection' in document) {
-                    el.focus();
-                    var Sel = document.selection.createRange();
-                    var SelLength = document.selection.createRange().text.length;
-                    Sel.moveStart('character', -el.value.length);
-                    pos = Sel.text.length - SelLength;
-                }
-                return pos;
-            },
-
-            String, function getSelectedText(){
-                var el = this._dom.valueOf()[0],text = el.value || '';
-                if('selectionStart' in el) {
-                    text = text.slice(el.selectionStart, el.selectionEnd);
-                } else if('selection' in document) {
-                    el.focus();
-                    text = document.selection.createRange().text;
-                }
-                return text;
             }
         ]);
 

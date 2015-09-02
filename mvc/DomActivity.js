@@ -32,7 +32,6 @@ NAMESPACE('ria.mvc', function () {
                 BASE();
 
                 this._activityClass = null;
-                this._modelWaitClass = MODEL_WAIT_CLASS;
                 this._domAppendTo = null;
                 this._domEvents = [];
                 this.processAnnotations_(new ria.reflection.ReflectionClass(this.getClass()));
@@ -73,7 +72,7 @@ NAMESPACE('ria.mvc', function () {
             OVERRIDE, ria.async.Future, function refreshD(future) {
 
                 this._loaderTimer = new ria.async.Timer.$once(300, function (timer, lag) {
-                    this.dom.addClass(this._modelWaitClass);
+                    this.dom.addClass(MODEL_WAIT_CLASS);
                     this._loaderTimer = null;
                 }, this);
 
@@ -81,7 +80,7 @@ NAMESPACE('ria.mvc', function () {
             },
 
             OVERRIDE, VOID, function onRender_(model) {
-                this.dom.removeClass(this._modelWaitClass);
+                this.dom.removeClass(MODEL_WAIT_CLASS);
 
                 BASE(model);
 
@@ -127,7 +126,6 @@ NAMESPACE('ria.mvc', function () {
                 this.dom.removeClass('loading');
             },
 
-            [[String]],
             OVERRIDE, VOID, function onModelComplete_(msg_) {
                 BASE(msg_);
 
@@ -138,5 +136,6 @@ NAMESPACE('ria.mvc', function () {
                 BASE();
                 this._domAppendTo.remove(this.dom.empty());
             }
+
         ]);
 });
