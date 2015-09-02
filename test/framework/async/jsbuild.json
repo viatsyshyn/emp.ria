@@ -1,0 +1,24 @@
+{
+    "version": "3.0",
+
+    "appDir": "./",
+    "assetsDir": "./",
+
+    "libs": {
+        "ria": "../../../../src/framework/"
+    },
+
+    "options": {
+        "uglifyjs": {
+            "output": {
+                "beautify": true
+            }
+        }
+    },
+
+    "modules": [{
+        "name": "future_test",
+        "in": "./future_test.js",
+        "out": "./future_test.compiled.js"
+    }]
+}

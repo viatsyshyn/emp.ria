@@ -1,0 +1,49 @@
+{
+    "version": "3.0",
+
+    "appDir": "./",
+    "assetsDir": "./",
+
+    "libs": {
+        "ria": "../../../../src/framework/"
+    },
+
+    "options": {
+        "uglifyjs": {
+            "output": {
+                "beautify": true
+            },
+            "compress": {}
+        }
+    },
+
+    "modules": [{
+        "name": "annotation_test",
+        "in": "./annotation_test.js",
+        "out": "./annotation_test.compiled.js"
+    },{
+        "name": "class_test",
+        "in": "./class_test.js",
+        "out": "./class_test.compiled.js"
+    },{
+        "name": "delegate_test",
+        "in": "./delegate_test.js",
+        "out": "./delegate_test.compiled.js"
+    },{
+        "name": "exception_test",
+        "in": "./exception_test.js",
+        "out": "./exception_test.compiled.js"
+    },{
+        "name": "interface_test",
+        "in": "./interface_test.js",
+        "out": "./interface_test.compiled.js"
+    },{
+        "name": "enum_test",
+        "in": "./enum_test.js",
+        "out": "./enum_test.compiled.js"
+    },{
+        "name": "identifier_test",
+        "in": "./identifier_test.js",
+        "out": "./identifier_test.compiled.js"
+    }]
+}

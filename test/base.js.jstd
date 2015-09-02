@@ -1,0 +1,6 @@
+load:
+  - framework/_cfg.js
+  - ../base/*.js
+
+test:
+  - framework/base/*_test.js

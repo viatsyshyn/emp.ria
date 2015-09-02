@@ -1,0 +1,42 @@
+{
+  "name": "emp.ria-framework",
+  "title": "EMP RIA Framework",
+  "description": "EMP rich internet application framework",
+  "version": "0.0.0",
+  "main": "_bootstrap.node.js",
+  "homepage": "https://github.com/viatsyshyn/emp.ria2",
+  "author": {
+    "name": "Volodymyt Iatsyshyn",
+    "email": "viatsyshyn@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/viatsyshyn/emp.ria2"
+  },
+  "bugs": {
+    "url": "https://github.com/viatsyshyn/emp.ria2/issues"
+  },
+  "license": "MIT",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/viatsyshyn/emp.ria2/blob/master/LICENSE"
+    }
+  ],
+  "keywords": [
+    "emp.ria",
+    "javascript",
+    "library"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "async": "^1.4.2",
+    "chook": "0.0.3",
+    "chook-jstestdriver": "0.0.3",
+    "grunt": "^0.4.5",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-text-replace": "^0.4.0"
+  },
+  "scripts": {}
+}

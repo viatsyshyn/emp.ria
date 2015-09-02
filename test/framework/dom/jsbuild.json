@@ -1,0 +1,28 @@
+{
+    "version": "3.0",
+
+    "appDir": "./",
+    "assetsDir": "./",
+
+    "libs": {
+        "ria": "../../../../src/framework/"
+    },
+
+    "options": {
+        "uglifyjs": {
+            "output": {
+                "beautify": true
+            }
+        }
+    },
+
+    "modules": [{
+        "prepend": [
+            "../../../../src/framework/lib/sizzle.js",
+            "../../../../src/framework/lib/jquery-1.11.0.min.js"],
+        "globals": ["Sizzle", "jQuery"],
+        "name": "sizzle_test",
+        "in": "./sizzle_test.js",
+        "out": "./sizzle_test.compiled.js"
+    }]
+}

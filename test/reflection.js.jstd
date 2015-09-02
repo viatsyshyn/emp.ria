@@ -1,0 +1,16 @@
+load:
+  - framework/_cfg.js
+  # - src/framework/lib/stacktrace.js
+  - ../base/*.js
+  - ../syntax/*.js
+  - framework/require_stub.js
+  - ../reflection/Exception.js
+  - ../reflection/Reflector.js
+  - ../reflection/ReflectionCtor.js
+  - ../reflection/ReflectionMethod.js
+  - ../reflection/ReflectionProperty.js
+  - ../reflection/ReflectionInterface.js
+  - ../reflection/ReflectionClass.js
+  - framework/syntax.symbols.js
+test:
+  - framework/reflection/*_test.js

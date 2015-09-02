@@ -1,0 +1,29 @@
+load:
+  - framework/_cfg.js
+  - ../base/*.js
+  - ../syntax/*.js
+  - framework/require_stub.js
+  - ../reflection/Exception.js
+  - ../reflection/Reflector.js
+  - ../reflection/ReflectionCtor.js
+  - ../reflection/ReflectionMethod.js
+  - ../reflection/ReflectionProperty.js
+  - ../reflection/ReflectionInterface.js
+  - ../reflection/ReflectionClass.js
+  - ../async/ICancelable.js
+  - ../async/Future.js
+  - ../async/Completer.js
+  - ../async/IObservable.js
+  - ../async/Observable.js
+  - ../mvc/IActivity.js
+  - ../mvc/IView.js
+  - ../mvc/ISession.js
+  - ../mvc/State.js
+  - ../mvc/IContext.js
+  - ../mvc/IContextable.js
+  - ../mvc/MvcException.js
+  - ../mvc/View.js
+  - ../mvc/Activity.js
+  - framework/mvc/*_stubs.js
+test:
+  - framework/mvc/*_test.js

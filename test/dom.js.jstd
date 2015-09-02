@@ -1,0 +1,14 @@
+load:
+  - framework/_cfg.js
+  - ../base/*.js
+  - ../syntax/*.js
+  - framework/require_stub.js
+  - lib/sizzle.js
+  - lib/jquery-2.0.2.min.js
+  - ../dom/Events.js
+  - ../dom/Dom.js
+  - ../dom/SizzleDom.js
+  - ../dom/jQueryDom.js
+
+test:
+  - framework/dom/*_test.js

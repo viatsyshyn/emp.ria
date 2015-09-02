@@ -1,0 +1,9 @@
+load:
+  - framework/_cfg.js
+  # - src/framework/lib/stacktrace.js
+  - ../base/*.js
+  - ../syntax/*.js
+  - framework/syntax.symbols.js
+
+test:
+  - framework/syntax/*_test.js

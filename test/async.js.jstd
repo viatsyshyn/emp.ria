@@ -1,0 +1,10 @@
+load:
+  - framework/_cfg.js
+  - ../base/*.js
+  - ../syntax/*.js
+  - framework/require_stub.js
+  - ../async/ICancelable.js
+  - ../async/Future.js
+  - ../async/Completer.js
+test:
+  - framework/async/*_test.js
