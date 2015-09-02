@@ -165,7 +165,7 @@ NAMESPACE('ria.dom', function () {
      * @returns {String}
      */
     ria.dom.NewGID = function () {
-        console.info('ria.dom.NewGID() is deprecated, please use ria.dom.Dom.GID() instead.');
+        _DEBUG && console.warn('ria.dom.NewGID() is deprecated, please use ria.dom.Dom.GID() instead.');
         return ria.dom.Dom.GID();
     };
 
@@ -380,6 +380,11 @@ NAMESPACE('ria.dom', function () {
                 return this;
             },
 
+            function $fromHTML(html) {
+                BASE();
+                return ria.dom.Dom().fromHTML(html);
+            },
+
             /* DOM manipulations & navigation */
 
             SELF, function empty() {
@@ -409,7 +414,7 @@ NAMESPACE('ria.dom', function () {
                     return false;
 
                 var others = other.valueOf();
-                return this._dom.every(function(el) { return others.indexOf(el) >= 0; });
+                return this.valueOf().every(function(el) { return others.indexOf(el) >= 0; });
             },
 
             [[SELF]],
@@ -480,7 +485,7 @@ NAMESPACE('ria.dom', function () {
             [[String]],
             SELF, function first(selector_) {
                 if (!selector_)
-                    return new ria.dom.Dom([this.valueOf().shift()]);
+                    return new ria.dom.Dom(this.valueOf().slice(0,1));
 
                 throw new Exception('not implemented');
             },
@@ -488,7 +493,7 @@ NAMESPACE('ria.dom', function () {
             [[String]],
             SELF, function last(selector_) {
                 if (!selector_)
-                    return new ria.dom.Dom([this.valueOf().pop()]);
+                    return new ria.dom.Dom(this.valueOf().reverse().slice(0,1));
 
                 throw new Exception('not implemented');
             },
