@@ -34,7 +34,10 @@ NAMESPACE('ria.async', function () {
         VOID, function FutureCompleteDelegate(){});
 
     var __futuresPool = [],
-        __uncaughtErrorHandler = DefaultErrorHandler;
+        __uncaughtErrorHandler = function (e) {
+            if (_DEBUG) console.error(e.toString());
+            else throw e;
+        };
 
     /** @class ria.async.Future */
     CLASS(

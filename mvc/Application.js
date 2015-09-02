@@ -36,7 +36,7 @@ NAMESPACE('ria.mvc', function () {
             READONLY, 'lineNo',
 
             function $(msg, srcUrl, lineNo, colNo, e_) {
-                BASE('Uncaught error: ' + msg + '\nAt ' + srcUrl + '@' + lineNo + ':' + colNo, e_);
+                BASE(msg + '\n  --> ' + srcUrl + '@' + lineNo + ':' + colNo, e_);
 
                 this.srcUrl = srcUrl;
                 this.lineNo = lineNo;

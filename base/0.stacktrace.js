@@ -38,15 +38,17 @@
         }
 
         //IE and Safari
-        if (arguments.callee) {
-            var currentFunction = arguments.callee.caller;
-            while (currentFunction) {
-                var fn = currentFunction.toString();
-                var fname = fn.substring(fn.indexOf("function") + 8, fn.indexOf('')) || 'anonymous';
-                callstack.push(fname);
-                currentFunction = currentFunction.caller;
+        try { // just in case IE crashes on .callee
+            if (arguments.callee) {
+                var currentFunction = arguments.callee.caller;
+                while (currentFunction) {
+                    var fn = currentFunction.toString();
+                    var fname = fn.substring(fn.indexOf("function") + 8, fn.indexOf('')) || 'anonymous';
+                    callstack.push(fname);
+                    currentFunction = currentFunction.caller;
+                }
             }
-        }
+        } catch (e) {}
 
         return callstack;
     }

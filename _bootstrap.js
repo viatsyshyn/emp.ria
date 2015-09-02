@@ -48,12 +48,17 @@ var _GLOBAL = window;
         siteRoot += '/';
     }
 
+    siteRoot = siteRoot.replace(/^https?:/i, '');
+
     var root = ria.__CFG["#require"].appRoot;
-    if (root === undefined) {
+    if (!root) {
         var t = window.location.pathname.split('/');
         t.pop();
         root = t.join('/') + '/';
     }
+
+    if (!root.match(/^\/\//i))
+        root = siteRoot + root;
 
     var appDir = resolve(ria.__CFG["#require"].appCodeDir || "~/app/");
     var assetsDir = resolve(ria.__CFG["#require"].assetsDir || "~/assets/");
@@ -80,10 +85,10 @@ var _GLOBAL = window;
         if (root)   path = path.replace(/^~\//gi, root);
         if (appDir) path = path.replace(/^\.\//gi, appDir);
 
-        if (!path.match(/^\//i) && appDir)
+        if (!path.match(/^\/\//i) && appDir)
             path = appDir + path;
 
-        return path.replace(/\/\//gi, '/');
+        return (path.match(/^\/\//i) ? '/' : '') + path.replace(/\/\//gi, '/');
     }
 
     function REQUIRE(path) {

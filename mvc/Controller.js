@@ -189,7 +189,7 @@ NAMESPACE('ria.mvc', function () {
                 try {
                     return params.map(function (_, index) {
                         try {
-                            var Type = types[index];
+                            var Type = types[index] || Object;
                             if (_ === null || _ === undefined || (!Array.isArray(_) && _ instanceof Type))
                                 return _;
 
@@ -241,7 +241,7 @@ NAMESPACE('ria.mvc', function () {
                 params.unshift(state.getAction());
                 params.unshift(state.getController());
                 params = params.map(function(item){
-                    return item.valueOf().toString();
+                    return item ? item.valueOf().toString() : '';
                 });
                 var href = '#' + params.join('/');
                 if(_BROWSER && href != _GLOBAL.location.hash && history.pushState)

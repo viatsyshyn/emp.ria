@@ -41,7 +41,7 @@ ria.__REQUIRE = ria.__REQUIRE || {};
         if (!path.match(/^\//i))
             path = appCodeDir + path;
 
-        path = path.replace(/\/\//gi, '/');
+        path = (path.match(/^\//i) ? '/' : '') + path.replace(/\/\//gi, '/');
 
         return path;
     }
@@ -134,4 +134,15 @@ ria.__REQUIRE = ria.__REQUIRE || {};
 
     if (root.isNotLoaded())
         root.state = 2; // this is a hack
+
+    ria.__REQUIRE.reloadJade = function () {
+        !function walkModule(root) {
+            if (/\.jade$/.test(root.id)) {
+                ria.__REQUIRE.load(root.id)
+                    .done(function (content) { this.content = content; }.bind(root));
+            } else {
+                root.deps.forEach(walkModule);
+            }
+        }(root);
+    }
 })();

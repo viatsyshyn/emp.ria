@@ -371,7 +371,7 @@ NAMESPACE('ria.mvc', function () {
                     top.pause();
 
                 this.push_(activity);
-                activity.show();
+                //activity.show(); // push_() does it already
                 activity.refreshD(ria.async.Future.$fromData(model));
 
                 return completer.getFuture()

@@ -14,9 +14,9 @@ NAMESPACE('ria.mvc', function () {
             function $() {
                 BASE();
                 this._inited = false;
-                this._started = false;
                 this._paused = false;
                 this._stopped = false;
+                this._active = false;
                 this._onClose = new ria.async.Observable(ria.mvc.ActivityClosedEvent);
                 this._onRefresh = new ria.async.Observable(ria.mvc.ActivityRefreshedEvent);
             },
@@ -31,24 +31,28 @@ NAMESPACE('ria.mvc', function () {
                     this._inited = true;
                 }
 
-                if (!this._paused) {
+                if (!this._paused && !this._active) {
                     this._stopped && this.onRestart_();
                     this.onStart_();
                 }
 
-                this.onResume_();
+                if (!this._active) {
+                    this.onResume_();
+                }
 
                 this._stopped = false;
                 this._paused = false;
+                this._active = true;
             },
 
             /**
              * Make this activity non-active
              */
             VOID, function pause() {
-                if (!this._paused) {
+                if (!this._paused && this._active) {
                     this.onPause_();
                     this._paused = true;
+                    this._active = false;
                 }
             },
 
@@ -63,6 +67,7 @@ NAMESPACE('ria.mvc', function () {
 
                 this._stopped = true;
                 this._paused = false;
+                this._active = false;
 
                 this._onClose.clear();
                 this._onRefresh.clear();
@@ -114,6 +119,9 @@ NAMESPACE('ria.mvc', function () {
                         this.onRefresh_(model);
                         return model;
                     }, this)
+                    .catchError(function (e) {
+                        throw Exception('Error full refreshing activity ' + ria.__API.getIdentifierOfValue(this), e);
+                    }, this);
             },
 
             [[ria.async.Future, String]],
@@ -132,6 +140,9 @@ NAMESPACE('ria.mvc', function () {
                         this.onPartialRefresh_(model, msg_);
                         return model;
                     }, this)
+                    .catchError(function (e) {
+                        throw Exception('Error partial refreshing activity ' + ria.__API.getIdentifierOfValue(this), e);
+                    }, this);
             },
 
             [[ria.async.Future, String]],

@@ -1,4 +1,15 @@
 (function () {
+    "use strict";
+
+    function beautifyStack(s) {
+        try {
+            return s.split('\n').map(function (_) { return _.trim(); }).join('\n    ').trim();
+        } catch (e) { return s; }
+    }
+
+    function getErrorDetails(e) {
+        return beautifyStack(e.stack || e.description || e.message || e.toString());
+    }
 
     /** @class ria.__API.Exception */
     ria.__API.Exception = (function () {
@@ -8,23 +19,20 @@
 
         ExceptionBase.prototype.$ = function (msg, inner_) {
             this.msg = msg;
-            this.stack = ria.__API.getStackTrace(Error(msg));
+            try { throw Error(msg); } catch (e) {
+                this.stack = getErrorDetails(e);
+            }
             this.inner_ = inner_;
         };
         ria.__API.ctor('$', ExceptionBase, ExceptionBase.prototype.$, [String, [Error, ExceptionBase]], ['msg', 'inner_'], []);
 
         ExceptionBase.prototype.toString = function () {
-            var msg = ria.__API.getIdentifierOfValue(this) + ': ' + this.msg + '\n  ' + this.stack.join('\n  ')
+            var msg = ria.__API.getIdentifierOfValue(this) + ': ' + this.msg + '\n  Details: ' + this.stack
                 .replace('Error:', '')
                 .replace('Error@native', '');
 
             if (this.inner_) {
-                msg += '\nCaused by: ';
-                if (this.inner_ instanceof Error) {
-                    msg += this.inner_.message + '\n' + this.inner_ + '\n' + ria.__API.getStackTrace(this.inner_).join('\n  ');
-                } else {
-                    msg += this.inner_.toString();
-                }
+                msg += '\nCaused by: ' +((this.inner_ instanceof Error) ? getErrorDetails(this.inner_) : this.inner_.toString());
             }
 
             return msg;
@@ -34,7 +42,7 @@
         ExceptionBase.prototype.getMessage = function () { return this.msg; };
         ria.__API.method(ExceptionBase, ExceptionBase.prototype.getMessage, 'getMessage', String, [], [], []);
 
-        ExceptionBase.prototype.getStack = function () { return this.stack; };
+        ExceptionBase.prototype.getStack = function () { return this.stack.split('\n').map(function (_) { return _.trim(); }); };
         ria.__API.method(ExceptionBase, ExceptionBase.prototype.getStack, 'getStack', Array, [], [], []);
 
         ria.__API.compile(ExceptionBase);
