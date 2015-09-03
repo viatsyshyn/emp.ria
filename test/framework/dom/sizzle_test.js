@@ -6,7 +6,7 @@ REQUIRE('ria.dom.Dom');
 REQUIRE('ria.dom.SizzleDom');
 REQUIRE('ria.dom.jQueryDom');
 
-(function (ria, stubs) {
+(function (ria, stubs, jQuery) {
     "use strict";
 
     var PROTO = {
@@ -392,9 +392,13 @@ REQUIRE('ria.dom.jQueryDom');
         }
     };
 
-    function MAKE(obj) {
+    function MAKE(obj, ext) {
         for(var k in PROTO) if (PROTO.hasOwnProperty(k)) {
             obj[k] = PROTO[k];
+        }
+
+        for(k in ext) if (ext.hasOwnProperty(k)) {
+          obj[k] = ext[k];
         }
 
         return obj;
@@ -410,5 +414,51 @@ REQUIRE('ria.dom.jQueryDom');
 
     AsyncTestCase("JQueryTestCase").prototype = MAKE({
         IMPL: ria.dom.jQueryDom
+    }, {
+        test$: function () {
+            jstestdriver.appendHtml(
+              '<div id="target" class="p0">' +
+              '<div class="pos0"></div>' +
+              '<div id="before-this" class="pos1 p1">' +
+              '<div class="pos3 p2">' +
+              '<div id="child"></div>' +
+              '</div>' +
+              '</div>' +
+              '</div>', window.document);
+
+            var dom = ria.dom.Dom('#child');
+
+            assertNotNull('jQueryDom has magic $ property', dom.$);
+
+            assertNotNull('jQuery is required', jQuery);
+
+            assertInstanceOf('dom.$ must be jQuery', jQuery, dom.$);
+
+            assertEquals(1, dom.$.length);
+
+            assertEquals('#child', dom.$.selector);
+        },
+
+        testjQueryExt: function () {
+            jstestdriver.appendHtml(
+              '<div id="target" class="p0">' +
+              '<div class="pos0"></div>' +
+              '<div id="before-this" class="pos1 p1">' +
+              '<div class="pos3 p2">' +
+              '<div id="child"></div>' +
+              '</div>' +
+              '</div>' +
+              '</div>', window.document);
+
+            assertNotNull('jQuery is required', jQuery);
+
+            var dom = jQuery('#child');
+
+            assertNotNull('jQuery extension should return something', dom.Dom());
+
+            assertInstanceOf('jQuery extension should return ria.dom.Dom', ria.dom.Dom, dom.Dom());
+
+            assertEquals(1, dom.Dom().count());
+        }
     });
-})(ria);
+})(ria, null, jQuery);
