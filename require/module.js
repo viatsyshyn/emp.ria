@@ -168,7 +168,7 @@
         if (module) {
             var m = ModuleDescriptor.getById(module);
             m.state = ModuleState.Loaded;
-            m.content = content;
+            m.content = m.content || content;
         }
 
         if (ModuleDescriptor.toArray().every(function (_) { return _.process(); })) {

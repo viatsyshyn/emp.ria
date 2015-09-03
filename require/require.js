@@ -38,10 +38,10 @@ ria.__REQUIRE = ria.__REQUIRE || {};
         path = path.replace(/^~\//gi, appRoot);
         path = path.replace(/^\.\//gi, appCodeDir);
 
-        if (!path.match(/^\//i))
+        if (!path.match(/^\/\//i))
             path = appCodeDir + path;
 
-        path = (path.match(/^\//i) ? '/' : '') + path.replace(/\/\//gi, '/');
+        path = (path.match(/^\/\//i) ? '/' : '') + path.replace(/\/\//gi, '/');
 
         return path;
     }
@@ -103,6 +103,12 @@ ria.__REQUIRE = ria.__REQUIRE || {};
         return ria.__REQUIRE.ModuleDescriptor.getById(resolve(uri, true)).content;
     };
 
+    ria.__REQUIRE.setContent = function (uri, content) {
+        setTimeout(function() {
+            ria.__REQUIRE.ModuleDescriptor.getById(resolve(uri, true)).content = content;
+        }, 1);
+    };
+
     ria.__REQUIRE.addAssetAlias = function(alias) {
         AssetAliases.push(new RegExp(
             alias.replace(/\./gi, '\\.')
@@ -138,8 +144,9 @@ ria.__REQUIRE = ria.__REQUIRE || {};
     ria.__REQUIRE.reloadJade = function () {
         !function walkModule(root) {
             if (/\.jade$/.test(root.id)) {
+                root.content = null;
                 ria.__REQUIRE.load(root.id)
-                    .done(function (content) { this.content = content; }.bind(root));
+                    .done(function (content) { this.content = this.content || content; }.bind(root));
             } else {
                 root.deps.forEach(walkModule);
             }
