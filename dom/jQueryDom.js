@@ -94,10 +94,8 @@ NAMESPACE('ria.dom', function () {
                   this._dom = [dom_];
                 } else if (dom_ instanceof NodeList) {
                   this._dom = ria.__API.clone(dom_);
-                } else if (dom_ instanceof SELF) {
+                } else if (dom_ instanceof ria.dom.Dom) {
                   this._dom = dom_.valueOf();
-                } else if (Array.isArray(dom_)) {
-                  this._dom = dom_;
                 } if (dom_ instanceof jQuery) {
                     this._dom = dom_.get();
                 }
