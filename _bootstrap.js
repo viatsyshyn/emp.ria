@@ -24,9 +24,13 @@ var _GLOBAL = window;
     for(var index = 0; index < scripts.length; index++) {
         var script = scripts[index];
 
-        if (script.src.toString().match(/ria\/_bootstrap\.js$/i)) {
-            var text = (script.innerText || script.innerHTML).toString().split('=').slice(1);
-            ria.__CFG = JSON.parse(text.join('='));
+        if (script.src.toString().match(/\/_bootstrap\.js$/i)) {
+            var text = (script.innerText || script.innerHTML).toString();
+            if (text.match(/\s*ria\.__CFG = \{/)) {
+              var json = text.split('=').slice(1);
+              ria.__CFG = JSON.parse(json.join('='));
+              break;
+            }
         }
     }
 

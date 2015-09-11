@@ -29,7 +29,7 @@ ria.__REQUIRE = ria.__REQUIRE || {};
         if (!isAsset) {
             for(var prefix in libs) if (libs.hasOwnProperty(prefix)) {
                 if (path.substr(0, prefix.length) == prefix) {
-                    path = libs[prefix] + path;
+                    path = libs[prefix] + path.substring(prefix.length);
                     break;
                 }
             }
