@@ -38,8 +38,8 @@ module.exports = function(grunt) {
 
     replace: {
       version: {
-        src: ['package.json', 'bower.json'],               // source files array (supports minimatch)
-        dest: ['package.json', 'bower.json'],              // destination directory or file
+        src: 'package.json',               // source files array (supports minimatch)
+        dest: 'package.json',              // destination directory or file
         replacements: [{
           from: '0.0.0',                   // string replacement
           to: pkg.version
