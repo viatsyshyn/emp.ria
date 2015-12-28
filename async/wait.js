@@ -35,17 +35,17 @@ NAMESPACE('ria.async', function () {
                     completer.progress(counter);
                 }
             })
-            .complete(function () {
-                if (resolved[index] || complete) return;
-
-                complete = true;
-                completer.cancel();
-            })
             .catchError(function (e) {
                 if (complete) throw e;
 
                 complete = true;
                 completer.completeError(e);
+            })
+            .complete(function () {
+                if (resolved[index] || complete) return;
+
+                complete = true;
+                completer.cancel();
             })
         });
 
