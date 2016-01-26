@@ -3,6 +3,8 @@ REQUIRE('ria.mvc.LinkControl');
 NAMESPACE('ria.controls', function () {
     "use strict";
 
+    var H5F = _GLOBAL['H5F'] || null;
+
     var r20 = /%20/g,
         rbracket = /\[\]$/,
         rCRLF = /\r?\n/g,
@@ -141,7 +143,12 @@ NAMESPACE('ria.controls', function () {
                     var action = $target.getData('action');
                     var p = serializeForm($target.valueOf().shift());
                     var params = {};
-                    p.forEach(function (o) { params[o.name] = o.value; });
+                    p.forEach(function (o) {
+                        if(Array.isArray(o)){
+                            params[o[0].name] = o.map(function(item){return item.value})
+                        }
+                        params[o.name] = o.value; }
+                    );
 
                     var name = $target.getData('submit-name');
                     var value = $target.getData('submit-value');
