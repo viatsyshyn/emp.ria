@@ -72,7 +72,7 @@ NS('ria.reflection', function () {
                     var genericTypes = this.clazz.__META.genericTypes;
                     var genericSpecs = this.clazz.__META.genericTypes.map(function (type, index) {
                         if (this.clazz.__META.baseSpecs.length > index)
-                            return this.clazz.__META.genericTypes[index];
+                            return this.clazz.__META.baseSpecs[index];
 
                         return instance.getSpecsOf(type.name);
                     }.bind(this));
