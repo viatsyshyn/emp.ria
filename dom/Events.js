@@ -65,6 +65,14 @@ NAMESPACE('ria.dom', function () {
                 }));
             },
 
+            SELF, function BLUR(data_) {
+                return new SELF('BlurEvent', 'blur', def(data_, {
+                    'view': window,
+                    'bubbles': true,
+                    'cancelable': true
+                }));
+            },
+
             SELF, function CHANGE(data_) {
                 return new SELF('UIEvent', 'change', def(data_, {
                     'view': window,
