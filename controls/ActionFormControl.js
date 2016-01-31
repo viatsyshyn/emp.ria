@@ -150,6 +150,21 @@ NAMESPACE('ria.controls', function () {
                         params[o.name] = o.value; }
                     );
 
+                    Object.keys(params).forEach(function (key) {
+                        var path = key.split('.');
+                        if (path.length < 2) return;
+
+                        var p = params;
+                        do {
+                            var root = path.shift();
+                            var def = isNaN(parseInt(path[0], 10)) ? {} : [];
+                            p = p[root] = p[root] || def;
+                        } while (path.length > 1);
+
+                        p[path.shift()] = params[key];
+                        delete params[key];
+                    });
+
                     var name = $target.getData('submit-name');
                     var value = $target.getData('submit-value');
 
