@@ -66,7 +66,7 @@ NAMESPACE('ria.dom', function () {
             },
 
             SELF, function BLUR(data_) {
-                return new SELF('BlurEvent', 'blur', def(data_, {
+                return new SELF('FocusEvent', 'blur', def(data_, {
                     'view': window,
                     'bubbles': true,
                     'cancelable': true
