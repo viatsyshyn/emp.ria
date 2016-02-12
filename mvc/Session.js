@@ -1,4 +1,5 @@
 REQUIRE('ria.mvc.ISession');
+REQUIRE('ria.mvc.IReadonlySession');
 
 NAMESPACE('ria.mvc', function () {
     "use strict";
@@ -9,7 +10,7 @@ NAMESPACE('ria.mvc', function () {
 
     /** @class ria.mvc.Session */
     CLASS(
-        'Session', IMPLEMENTS(ria.mvc.ISession), [
+        'Session', IMPLEMENTS(ria.mvc.ISession, ria.mvc.IReadonlySession), [
 
             function $() {
                 BASE();

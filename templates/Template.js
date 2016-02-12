@@ -4,6 +4,8 @@ REQUIRE('ria.dom.Dom');
 
 REQUIRE('ria.reflection.ReflectionClass');
 
+REQUIRE('ria.mvc.IReadonlySession');
+
 /** @namespace ria.templates */
 NAMESPACE('ria.templates', function () {
     "use strict";
@@ -41,6 +43,7 @@ NAMESPACE('ria.templates', function () {
     /** @class ria.templates.Template */
     CLASS(ABSTRACT,
         'Template', [
+            ria.mvc.IReadonlySession, 'session',
             Number, 'collectionIndex',
             Array, 'collection',
 

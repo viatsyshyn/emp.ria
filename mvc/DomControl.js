@@ -4,8 +4,17 @@ REQUIRE('ria.mvc.DomEventBind');
 
 REQUIRE('ria.reflection.ReflectionClass');
 
+REQUIRE('ria.templates.Template');
+
 NAMESPACE('ria.mvc', function () {
     "use strict";
+
+    /** @class ria.mvc.RenderToActions */
+    ENUM('RenderToActions', {
+        Prepend: 'prepend',
+        Replace: 'replace',
+        Append: 'append'
+    });
 
     /** @class ria.mvc.DomControl */
     CLASS(
@@ -65,6 +74,26 @@ NAMESPACE('ria.mvc', function () {
             },
 
             [[ria.dom.Dom]],
-            VOID, function onActivate_(dom) {}
-        ]);
+            VOID, function onActivate_(dom) {},
+
+
+            [[Class, ClassOf(ria.templates.Template), ria.dom.Dom, Object, ria.mvc.RenderToActions]],
+            VOID, function renderWith(model, Tpl, target, options_, action_) {
+                var tpl = new Tpl;
+                tpl.setSession(this.context.getSession());
+                tpl.assign(model);
+                tpl.options(options_ || {});
+
+                var dom = ria.dom.Dom(tpl.render());
+
+                switch (action_) {
+                    case ria.mvc.RenderToActions.Prepend: dom.prependTo(target); break;
+                    case ria.mvc.RenderToActions.Append: dom.appendTo(target); break;
+                    default: dom.appendTo(target.empty());
+                }
+
+                this.content.getDefaultView().notifyControlRefreshed();
+            }
+
+      ]);
 });

@@ -1,4 +1,6 @@
 REQUIRE('ria.mvc.IActivity');
+REQUIRE('ria.mvc.IView');
+REQUIRE('ria.mvc.ISession');
 
 REQUIRE('ria.async.Observable');
 
@@ -11,6 +13,9 @@ NAMESPACE('ria.mvc', function () {
      */
     CLASS(ABSTRACT,
         'Activity', IMPLEMENTS(ria.mvc.IActivity), [
+            ria.mvc.IView, 'view',
+            ria.mvc.ISession, 'session',
+
             function $() {
                 BASE();
                 this._inited = false;

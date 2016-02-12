@@ -201,6 +201,10 @@ NAMESPACE('ria.mvc', function () {
                 this._refreshEvents.notifyAndClear([activity, model, msg_]);
             },
 
+            VOID, function notifyControlRefreshed() {
+                this._refreshEvents.notifyAndClear([null, null]);
+            },
+
             [[ria.mvc.ActivityRefreshedEvent]],
             VOID, function onActivityRefreshed(callback) {
                 this._refreshEvents.on(callback);
@@ -323,7 +327,10 @@ NAMESPACE('ria.mvc', function () {
                     }
                 }
 
-                return new activityClass;
+                var result = new activityClass;
+                result.setView(this);
+                result.setSession(this.context.getSession());
+                return result;
             },
 
             VOID, function processViewResultsQueue_() {

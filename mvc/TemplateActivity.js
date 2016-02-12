@@ -121,7 +121,9 @@ NAMESPACE('ria.mvc', function () {
             },
 
             [[ria.templates.Template, Object, String]],
-            VOID, function onPrepareTemplate_(tpl, model, msg_) {},
+            VOID, function onPrepareTemplate_(tpl, model, msg_) {
+                tpl.setSession(this.session);
+            },
 
             OVERRIDE, VOID, function onRender_(model) {
                 BASE(model);
