@@ -1,0 +1,15 @@
+mixin RenderWith(data, tplClass)
+    tpl = new tplClass
+    -tpl.options(attributes)
+    -tpl.setBlock && tpl.setBlock(block || null)
+    if Array.isArray(data)
+        -tpl.setCollection(data)
+        each item, index in data
+            -tpl.setCollectionIndex(index)
+            -tpl.assign(item)
+            -tpl.renderBuffer()
+    else
+        -tpl.assign(item)
+        -tpl.renderBuffer()
+
+    -buf.push(tpl.flushBuffer())

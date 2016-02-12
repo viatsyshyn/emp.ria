@@ -1,0 +1,4 @@
+mixin ActionLink(controller, action)
+    -attributes = ria.controls.ActionLinkControl.PREPARE(attributes, ria.__API.clone(arguments))
+    a(attributes)
+        block

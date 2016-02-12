@@ -1,0 +1,33 @@
+{
+    "version": "3.0",
+
+    "appDir": "/",
+
+    "libs": {
+        "ria": "../../../src/framework/",
+        "ria2": "../../../src/framework/",
+        "lib": "../../../src/framework/"
+    },
+
+    "options": {
+        "uglifyjs": {
+            "compress": {},
+            "mangle": {},
+            "output": {
+                "beautify": true
+            }
+        }
+    },
+
+    "modules": [{
+        "name": "App",
+        "app": "app.Application",
+        "out": "app/Application.compiled.js",
+
+        "prepend": [
+            "lib/jade.runtime.js"
+        ],
+
+        "globals": ["jade"]
+    }]
+}

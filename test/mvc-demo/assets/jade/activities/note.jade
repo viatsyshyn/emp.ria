@@ -1,0 +1,9 @@
+.note
+    h3= self.title
+    p
+        = self.description + ' '
+        span= self.title
+        = ' ' + self.description
+    if self.renderLink
+        div
+            +ActionLink('index', 'details', self.id) Details

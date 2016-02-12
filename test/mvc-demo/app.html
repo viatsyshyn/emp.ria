@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ria.MVC demo</title>
+    <style type="text/css">
+        BODY {background: black; color: #ff8c00; font-size: .67em;}
+    </style>
+
+    <link href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" type="text/css" rel="stylesheet"/>
+    <script src="/test/lib/jquery-2.0.2.min.js" type="text/javascript"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js" type="text/javascript"></script>
+    <script src="/test/lib/sizzle.js" type="text/javascript"></script>
+
+</head>
+<body>
+    <h1>ria.MVC demo</h1>
+
+    <div id="main">
+        <h2>Loading...</h2>
+    </div>
+
+<script src="/_bootstrap.js" type="text/javascript">
+    ria.__CFG = {
+        "#require": {
+            "appCodeDir": "//localhost:8080/test/mvc-demo/",
+            "libs": {
+                "lib/": "~/../lib/",
+                "ria": "~/../.."
+            },
+            "plugins": [
+              "~/assets/jade.js"
+            ]
+        },
+        "#mvc": {
+            "appClass": "app.Application",
+            "settings": {
+                "player": "c01t",
+                "session": "123456789098756432123645",
+                "push.enabled": true,
+                "service": "/test/mvc-demo/data/"
+            }
+        }
+    }
+</script>
+
+<script type="text/javascript"></script>
+</body>
+</html>

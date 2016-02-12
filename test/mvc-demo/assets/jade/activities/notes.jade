@@ -1,0 +1,10 @@
+h3 Notes (page #{self.page}, page size #{self.pageSize}, total #{self.count})
+.notes
+    +RenderWith(self.items, app.templates.Note)(
+        renderLink = true)
+
+h2= self.session.get('player')
+
++DatePicker('date', new Date())( data-options = {
+    showOtherMonths: true,
+    selectOtherMonths: true })
