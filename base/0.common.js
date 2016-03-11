@@ -224,7 +224,7 @@ ria.__API = ria.__API || {};
                 return obj;
 
             default:
-                if (Array.isArray(obj) || (obj.length !== null && obj.length === +obj.length))
+                if (Array.isArray(obj) || (obj.length !== undefined && obj.length === +obj.length))
                     return [].slice.call(obj);
 
                 if ('function' == typeof obj.clone)
