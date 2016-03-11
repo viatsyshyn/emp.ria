@@ -207,7 +207,7 @@ ria.__SYNTAX = ria.__SYNTAX || {};
         for(var flag in def1.flags)  {
             if (flag == 'isReadonly') continue;
             if (flag == 'isOverride') continue;
-            if (def1.flags.hasOwnProperty(flag) && def1.flags[flag] != def2.flags[flag])
+            if (def1.flags.hasOwnProperty(flag) && (!!def1.flags[flag] != !!def2.flags[flag]))
                 return false;
         }
         return true;
