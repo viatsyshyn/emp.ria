@@ -22,6 +22,7 @@ NAMESPACE('ria.mvc', function () {
                 this._paused = false;
                 this._stopped = false;
                 this._active = false;
+                this._viewMode = null;
                 this._onClose = new ria.async.Observable(ria.mvc.ActivityClosedEvent);
                 this._onRefresh = new ria.async.Observable(ria.mvc.ActivityRefreshedEvent);
             },
@@ -239,6 +240,21 @@ NAMESPACE('ria.mvc', function () {
                 this._onRefresh.on(callback);
             },
 
-            Object, function getModalResult() { return null; }
+            Object, function getModalResult() { return null; },
+
+            Object, function isReadyForClosing() { return true; },
+
+            FINAL, ria.mvc.ActivityViewMode, function getViewMode() {
+                return this._viewMode;
+            },
+
+            [[ria.mvc.ActivityViewMode]],
+            FINAL, VOID, function setViewMode(mode) {
+                this._viewMode = mode;
+
+                _DEBUG && Object.defineProperty(this, '_viewMode', {
+                    writable: false
+                })
+            }
         ]);
 });

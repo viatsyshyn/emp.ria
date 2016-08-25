@@ -60,7 +60,14 @@ NAMESPACE('ria.mvc', function () {
 
                 while (this.getCurrent() != null) {
                     if (this.getCurrent().equals(activity)) {
-                        this.pop(); // stop and start under
+
+                        this.stopActivity_(this.pop_());
+
+                        var top = this.getCurrent();
+                        if (top) {
+                          top.show();
+                        }
+
                         break;
                     } else {
                         this.stopActivity_(this.pop_()); // just stop current
@@ -74,24 +81,56 @@ NAMESPACE('ria.mvc', function () {
 
             [[ria.mvc.IActivity, ria.async.Future]],
             ria.async.Future, function pushD(activity, data) {
-                this.push(activity);
-                return activity.refreshD(data);
-            },
+                var prepare = this.reset_()
+                    .then(function () {
+                        this.push_(activity);
+                    }, this);
 
-            /**
-             * Push activity at the top of stack and hide previous
-             * @param {ria.mvc.Activity} activity
-             */
-            [[ria.mvc.IActivity]],
-            VOID, function push(activity) {
-                this.reset();
-                this.push_(activity);
+                var result = ria.async.wait(data, prepare)
+                    .then(function (d) {
+                        return d[0];
+                    }, this);
+
+                return activity.refreshD(result);
             },
 
             [[ria.mvc.IActivity, ria.async.Future]],
             ria.async.Future, function shadeD(activity, data) {
-                this.shade(activity);
-                return activity.refreshD(data);
+                var top = this.getCurrent();
+                var prepare = ria.async.Future.$fromData(null)
+                  .then(function () {
+                    if (!top) return;
+
+                    top.pause();
+
+                    if (this.isSameActivityGroup_(top, activity)) {
+                      var result = top.isReadyForClosing();
+                      if (result === false)
+                        return ria.async.BREAK;
+
+                      if (result instanceof ria.async.Future) {
+                        return result.then(function (can_close) {
+                          if (can_close === false)
+                            return ria.async.BREAK;
+                        }, this);
+                      }
+                    } else {
+                      top = null;
+                    }
+                  }, this)
+                  .then(function () {
+                    if (top) this.stopActivity_(this.pop_());
+                  }, this)
+                  .then(function () {
+                    this.push_(activity);
+                  }, this);
+
+                var result = ria.async.wait(data, prepare)
+                    .then(function (d) {
+                        return d[0];
+                    }, this);
+
+                return activity.refreshD(result);
             },
 
             /**
@@ -121,46 +160,10 @@ NAMESPACE('ria.mvc', function () {
                 return activity.refreshD(data);
             },
 
-            /**
-             * Shade top of stack with activity
-             * @param {ria.mvc.Activity} activity
-             */
-            [[ria.mvc.IActivity]],
-            VOID, function shade(activity) {
-                var top = this.getCurrent();
-                if (top) {
-                    top.pause();
-
-                    if (this.isSameActivityGroup_(top, activity))
-                        this.stopActivity_(this.pop_());
-                }
-
-                this.push_(activity);
-            },
-
             [[ria.mvc.IActivity]],
             VOID, function stopActivity_(activity) {
                 activity.stop();
                 //this._activityCache.push(activity);
-            },
-
-            /**
-             * Pop from stack and show previous
-             * @return {ria.mvc.Activity}
-             */
-            ria.mvc.IActivity, function pop() {
-                var pop = this.pop_();
-                if (!pop)
-                    return null;
-
-                this.stopActivity_(pop);
-
-                var top = this.getCurrent();
-                if (top) {
-                    top.show();
-                }
-
-                return pop;
             },
 
             [[ImplementerOf(ria.mvc.IActivity), ria.async.Future, String]],
@@ -182,9 +185,28 @@ NAMESPACE('ria.mvc', function () {
             /**
              * Pop all from stack with stop and reset engine
              */
-            VOID, function reset() {
-                while (this.getCurrent() !== null)
-                    this.stopActivity_(this.pop_());
+            ria.async.Future, function reset_() {
+                return ria.async.Future.$fromData(null)
+                    .then(function once_more() {
+                        var current = null;
+                        while ((current = this.getCurrent()) !== null) {
+                            var result = current.isReadyForClosing();
+                            if (result === false)
+                                return ria.async.BREAK;
+
+                            if (result instanceof ria.async.Future) {
+                                return result.then(function (can_close) {
+                                    if (can_close === false)
+                                      return ria.async.BREAK;
+
+                                    this.stopActivity_(this.pop_());
+                                  }, this)
+                                  .then(once_more, this);
+                            }
+
+                            this.stopActivity_(this.pop_());
+                        }
+                    }, this);
             },
 
             ArrayOf(ria.mvc.IActivity), function getStack_() {
@@ -237,12 +259,14 @@ NAMESPACE('ria.mvc', function () {
                     case ria.mvc.ActivityActionType.Push:
                         if (actionResult.isOrUpdate() && this._stack[this._stack.length - 1] instanceof actionResult.getActivityClass()) {
                             activity = this._stack.pop();
-                            this.reset();
-                            this._stack.unshift(activity);
-                            result = activity
-                                .partialRefreshD(actionResult.getData(), actionResult.getMsg())
+                            result = this.reset_()
+                              .then(function () {
+                                this._stack.unshift(activity);
+                                return activity
+                                  .partialRefreshD(actionResult.getData(), actionResult.getMsg());
+                              }, this);
                         } else {
-                            activity = this.get_(actionResult.getActivityClass());
+                            activity = this.get_(actionResult.getActivityClass(), ria.mvc.ActivityViewMode.Push);
                             result = this.pushD(activity, actionResult.getData())
                         }
 
@@ -255,7 +279,7 @@ NAMESPACE('ria.mvc', function () {
                                 return _.partialRefreshD(actionResult.getData(), actionResult.getMsg());
                             }));
                         } else {
-                            activity = this.get_(actionResult.getActivityClass());
+                            activity = this.get_(actionResult.getActivityClass(), ria.mvc.ActivityViewMode.Shade);
                             result = this.shadeD(activity, actionResult.getData())
                         }
 
@@ -268,7 +292,7 @@ NAMESPACE('ria.mvc', function () {
                                 return _.partialRefreshD(actionResult.getData(), actionResult.getMsg());
                             }));
                         } else {
-                            activity = this.get_(actionResult.getActivityClass());
+                            activity = this.get_(actionResult.getActivityClass(), ria.mvc.ActivityViewMode.Static);
                             result = this.staticD(activity, actionResult.getData())
                         }
 
@@ -317,8 +341,8 @@ NAMESPACE('ria.mvc', function () {
                 return this.processThenAction_(result, thenAction.getThenAction());
             },
 
-            [[ImplementerOf(ria.mvc.IActivity)]],
-            ria.mvc.IActivity, function get_(activityClass) {
+            [[ImplementerOf(ria.mvc.IActivity), ria.mvc.ActivityViewMode]],
+            ria.mvc.IActivity, function get_(activityClass, viewMode) {
                 for(var i = 0; i < this._activityCache.length; i++) {
                     var activity = this._activityCache[i];
                     if (activity.getClass() == activityClass) {
@@ -328,6 +352,7 @@ NAMESPACE('ria.mvc', function () {
                 }
 
                 var result = new activityClass;
+                result.setViewMode(viewMode);
                 result.setView(this);
                 result.setSession(this.context.getSession());
                 return result;
@@ -343,10 +368,13 @@ NAMESPACE('ria.mvc', function () {
 
                     if (viewResult instanceof ria.mvc.RedirectResult) {
                         this.redirectTo_(viewResult.getController(), viewResult.getAction(), viewResult.getArgs());
+
                     } else if (viewResult instanceof ria.mvc.CloseResult) {
                         this.closeView_(viewResult.getActivityClass());
+
                     } else if (viewResult instanceof ria.mvc.ActionResult) {
                         this.handleActionResult_(viewResult);
+
                     } else {
                         throw Exception('Unknown ViewResult: ' + ria.__API.getIdentifierOfValue(viewResult));
                     }
@@ -368,7 +396,7 @@ NAMESPACE('ria.mvc', function () {
 
                 var completer = new ria.async.Completer;
 
-                var activity = this.get_(activityClass);
+                var activity = this.get_(activityClass, ria.mvc.ActivityViewMode.Shade);
                 activity.addCloseCallback(function () {
                     completer.complete(activity.getModalResult());
                 });

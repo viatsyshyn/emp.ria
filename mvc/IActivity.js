@@ -3,6 +3,14 @@ REQUIRE('ria.async.Future');
 NAMESPACE('ria.mvc', function () {
     "use strict";
 
+    /** @class ria.mvc.ActivityViewMode */
+    ENUM(
+        'ActivityViewMode', {
+            Push: 'push',
+            Shade: 'shade',
+            Static: 'static'
+        });
+
     /** @class ria.mvc.ActivityGroup */
     ANNOTATION(
         function ActivityGroup(name) {});
@@ -79,6 +87,23 @@ NAMESPACE('ria.mvc', function () {
         /**
          * Used only in modal mode to retrieve modal results
          */
-        Object, function getModalResult() {}
+        Object, function getModalResult() {},
+
+        /**
+         * Used to check if activity can be closed
+         * @returns Boolean|ria.async.Future<Boolean>
+         */
+        Object, function isReadyForClosing() {},
+
+        /**
+         * Used by View engine to get view mode
+         */
+        ria.mvc.ActivityViewMode, function getViewMode() {},
+
+        /**
+         * Used by View engine to set view mode
+         */
+        [[ria.mvc.ActivityViewMode]],
+        VOID, function setViewMode(mode) {}
     ]);
 });
