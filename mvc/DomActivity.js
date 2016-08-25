@@ -72,10 +72,12 @@ NAMESPACE('ria.mvc', function () {
             [[ria.async.Future]],
             OVERRIDE, ria.async.Future, function refreshD(future) {
 
-                this._loaderTimer = new ria.async.Timer.$once(300, function (timer, lag) {
-                    this.dom.addClass(this._modelWaitClass);
-                    this._loaderTimer = null;
-                }, this);
+                if (this.dom) {
+                    this._loaderTimer = new ria.async.Timer.$once(300, function (timer, lag) {
+                        this.dom.addClass(this._modelWaitClass);
+                        this._loaderTimer = null;
+                    }, this);
+                }
 
                 return BASE(future);
             },
@@ -106,7 +108,9 @@ NAMESPACE('ria.mvc', function () {
             OVERRIDE, VOID, function onCreate_() {
                 BASE();
 
-                var dom = this.dom = this.onDomCreate_().addClass(this._activityClass);
+                var dom = this.dom = this.onDomCreate_()
+                    .addClass(this._activityClass)
+                    .addClass(this._modelWaitClass);
 
                 var instance = this;
                 this._domEvents.forEach(function (_) {
