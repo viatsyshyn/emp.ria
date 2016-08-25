@@ -3,14 +3,23 @@ REQUIRE('ria.mvc.DomControl');
 NAMESPACE('ria.mvc', function () {
     "use strict";
 
+    function stringify(x) {
+        return JSON.stringify( x && (x.valueOf ? x.valueOf() : x) );
+    }
+
+    function mapLinkArg(x) {
+        return Array.isArray(x)
+            ? '[' + x.map(stringify).join(',') + ']'
+            : stringify(x)
+    }
+
     /** @class ria.mvc.LinkControl */
     CLASS(ABSTRACT,
         'LinkControl', EXTENDS(ria.mvc.DomControl), [
 
             String, function LINK(args) {
-                return encodeURIComponent(ria.__API.clone(args).map(function(_) { return Array.isArray(_)
-                    ? '[' + _.map(function(x){return JSON.stringify(x.valueOf())}).join(',') + ']'
-                    : JSON.stringify(_.valueOf ? _.valueOf() : _) }).join(','));
+                //noinspection JSConstructorReturnsPrimitive
+                return encodeURIComponent(ria.__API.clone(args).map(mapLinkArg).join(','));
             },
 
             [[String]],
