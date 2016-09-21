@@ -98,32 +98,36 @@ NAMESPACE('ria.mvc', function () {
             ria.async.Future, function shadeD(activity, data) {
                 var top = this.getCurrent();
                 var prepare = ria.async.Future.$fromData(null)
-                  .then(function () {
-                    if (!top) return;
+                    .then(function () {
+                        if (!top) return;
 
-                    top.pause();
+                        top.pause();
 
-                    if (this.isSameActivityGroup_(top, activity)) {
-                      var result = top.isReadyForClosing();
-                      if (result === false)
-                        return ria.async.BREAK;
+                        if (this.isSameActivityGroup_(top, activity)) {
+                            var result = top.isReadyForClosing();
+                            if (result === false) {
+                                top.show();
+                                return ria.async.BREAK;
+                            }
 
-                      if (result instanceof ria.async.Future) {
-                        return result.then(function (can_close) {
-                          if (can_close === false)
-                            return ria.async.BREAK;
-                        }, this);
-                      }
-                    } else {
-                      top = null;
-                    }
-                  }, this)
-                  .then(function () {
-                    if (top) this.stopActivity_(this.pop_());
-                  }, this)
-                  .then(function () {
-                    this.push_(activity);
-                  }, this);
+                            if (result instanceof ria.async.Future) {
+                                return result.then(function (can_close) {
+                                    if (can_close === false) {
+                                        top.show();
+                                        return ria.async.BREAK;
+                                    }
+                                }, this);
+                            }
+                        } else {
+                            top = null;
+                        }
+                    }, this)
+                    .then(function () {
+                        if (top) this.stopActivity_(this.pop_());
+                    }, this)
+                    .then(function () {
+                        this.push_(activity);
+                    }, this);
 
                 var result = ria.async.wait(data, prepare)
                     .then(function (d) {
