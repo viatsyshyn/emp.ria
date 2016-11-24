@@ -127,7 +127,12 @@ NAMESPACE('ria.controls', function () {
                 if (name) {
                     $form.setData('submit-name', name);
                     $form.setData('submit-value', $target.getValue() || $target.getAttr('value'));
-                    $form.setData('submit-skip', $target.hasClass('validate-skip'))
+                }
+
+                $form.setData('submit-skip', $target.hasClass('validate-skip'));
+
+                if ($target.hasData('action')) {
+                    $form.setData('action-override', $target.getData('action'));
                 }
             },
 
@@ -140,7 +145,8 @@ NAMESPACE('ria.controls', function () {
                 var controller = $target.getData('controller');
                 if (controller) {
 
-                    var action = $target.getData('action');
+                    var action = $target.getData('action-override') || $target.getData('action');
+
                     var p = serializeForm($target.valueOf().shift());
                     var params = {};
                     p.forEach(function (o) {
@@ -172,8 +178,10 @@ NAMESPACE('ria.controls', function () {
                         params[name] = value;
                     }
 
-                    $target.setData('submit-name', null);
-                    $target.setData('submit-value', null);
+                    $target.removeData('submit-name');
+                    $target.removeData('submit-value');
+                    $target.removeData('submit-skip');
+                    $target.removeData('action-override');
 
                     $target.addClass('working');
 
