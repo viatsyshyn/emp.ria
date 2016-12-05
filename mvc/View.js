@@ -324,6 +324,12 @@ NAMESPACE('ria.mvc', function () {
 
                         break;
 
+                    case ria.mvc.ActivityActionType.Callback:
+                        result = ria.async.Future.$fromData(null)
+                            .then(actionResult.getData());
+
+                        break;
+
                     default:
                         return ria.async.Future.$fromData(null);
                 }
@@ -336,13 +342,15 @@ NAMESPACE('ria.mvc', function () {
                 if (!thenAction)
                     return result;
 
-                result = ria.async.wait(result, thenAction.getData())
+                var thenFuture = thenAction.getData();
+                if (!thenFuture || !(thenFuture instanceof ria.async.Future))
+                    thenFuture = ria.async.Future.$fromData(thenFuture);
+
+                return ria.async.wait(result, thenFuture)
                     .then(function (d) {
                         thenAction.setData(d[1]);
                         return this.handleActionResult_(thenAction);
                     }, this);
-
-                return this.processThenAction_(result, thenAction.getThenAction());
             },
 
             [[ImplementerOf(ria.mvc.IActivity), ria.mvc.ActivityViewMode]],

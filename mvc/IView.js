@@ -47,7 +47,8 @@ NAMESPACE('ria.mvc', function () {
             Shade: 'shade',
             Static: 'static',
             Update: 'update',
-            SilentUpdate: 'silent-update'
+            SilentUpdate: 'silent-update',
+            Callback: 'callback'
         });
 
     /** @class ria.mvc.ActionResult */
@@ -70,11 +71,13 @@ NAMESPACE('ria.mvc', function () {
             },
 
             [[SELF]],
-            function chainUpdate(viewResult) {
+            SELF, function chainUpdate(viewResult) {
                 if (this.thenAction)
                     this.thenAction.chainUpdate(viewResult);
+                else
+                    this.thenAction = viewResult;
 
-                this.thenAction = viewResult;
+                return this;
             },
 
             /**
@@ -84,11 +87,21 @@ NAMESPACE('ria.mvc', function () {
              */
             [[Object, String]],
             SELF, function ChainUpdateView(data, msg_) {
-                this.chainUpdate(SELF.$fromData(this.activityClass,
+                return this.chainUpdate(SELF.$fromData(this.activityClass,
                     ria.mvc.ActivityActionType.SilentUpdate,
                     false, data, msg_));
+            },
 
-                return this;
+            /**
+             * Chains callback invoke after parent action result completes.
+             * If dataFuture is null this update is skipped. If dataFuture is BREAKed then
+             * all updates are canceled
+             */
+            [[Function]],
+            SELF, function OnViewReady(callback) {
+                return this.chainUpdate(SELF.$fromData(this.activityClass,
+                    ria.mvc.ActivityActionType.Callback,
+                    false, callback));
             }
         ]);
 
